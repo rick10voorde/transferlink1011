@@ -2,6 +2,7 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
 export interface IClub extends Document {
+  clerkId: string;  // Link met Clerk user
   name: string;
   email: string;
   country: string;
@@ -21,11 +22,20 @@ export interface IClub extends Document {
     allowAnonymousPosting: boolean;
     visibleToVerifiedAgentsOnly: boolean;
   };
+  // Nieuwe velden voor vacatures later
+  activeVacancies?: number;
+  totalVacanciesPosted?: number;
+  verificationDocuments?: string[];
   createdAt: Date;
   updatedAt: Date;
 }
 
 const ClubSchema = new Schema({
+  clerkId: {
+    type: String,
+    required: true,
+    unique: true
+  },
   name: {
     type: String,
     required: true,
@@ -91,7 +101,18 @@ const ClubSchema = new Schema({
       type: Boolean,
       default: true
     }
-  }
+  },
+  activeVacancies: {
+    type: Number,
+    default: 0
+  },
+  totalVacanciesPosted: {
+    type: Number,
+    default: 0
+  },
+  verificationDocuments: [{
+    type: String
+  }]
 }, {
   timestamps: true
 });

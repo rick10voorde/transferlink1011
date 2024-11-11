@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import { IJob } from '../models/job';
+import { IJob } from '../models/jobs.model';
 
 export interface JobBody extends Omit<IJob, 'club' | 'views' | 'applications' | 'createdAt' | 'updatedAt' | 'expiresAt'> {
   club: string;

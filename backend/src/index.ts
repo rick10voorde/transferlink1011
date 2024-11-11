@@ -4,10 +4,8 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import connectDB from './config/database';
+import jobRoutes from './routes/jobs.routes'; // Let op: jobs.routes ipv job.routes
 import { limiter } from './middleware/auth';
-import jobRoutes from './routes/jobRoutes';
-import clubRoutes from './routes/clubRoutes';
-import authRoutes from './routes/authRoutes';
 
 dotenv.config();
 
@@ -27,9 +25,7 @@ app.use(express.json());
 app.use(limiter);
 
 // Routes
-app.use('/api/auth', authRoutes);
 app.use('/api/jobs', jobRoutes);
-app.use('/api/clubs', clubRoutes);
 
 // Health check route
 app.get('/api/health', (_req: Request, res: Response) => {
