@@ -4,7 +4,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import connectDB from './config/database';
-import jobRoutes from './routes/jobs.routes'; // Let op: jobs.routes ipv job.routes
+import jobRoutes from './routes/jobs.routes';
 import { limiter } from './middleware/auth';
 
 dotenv.config();
@@ -17,7 +17,8 @@ app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
     ? 'https://yourdomain.com' 
     : 'http://localhost:3000',
-  credentials: true
+  credentials: true,
+  exposedHeaders: ['Authorization']
 }));
 app.use(helmet());
 app.use(morgan('dev'));
@@ -34,7 +35,7 @@ app.get('/api/health', (_req: Request, res: Response) => {
 
 // Global error handling middleware
 const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
-  console.error(err.stack);
+  console.error('Global Error:', err);
   
   if (err.statusCode === 401) {
     res.status(401).json({ message: 'Unauthorized' });
@@ -43,6 +44,7 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   }
 };
 
+// Gebruik error handlers als middleware
 app.use(errorHandler);
 
 // Start server and connect to database
