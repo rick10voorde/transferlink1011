@@ -1,4 +1,3 @@
-// backend/src/controllers/jobs.controller.ts
 import { Request, Response } from 'express';
 import { ParamsDictionary } from 'express-serve-static-core';
 import { ParsedQs } from 'qs';
@@ -79,12 +78,33 @@ export const createJob = async (req: AuthenticatedRequest, res: Response): Promi
 
 export const getJobs = async (_req: AuthenticatedRequest, res: Response): Promise<void> => {
   try {
-    console.log('Fetching all published jobs');
+    console.log('Fetching jobs...');
+    
+    // Haal alle gepubliceerde jobs op
     const jobs = await Job.find({ status: 'published' });
-    console.log('Found jobs:', jobs);
-    res.json(jobs);
+    
+    // Convert Mongoose documents naar plain objects
+    const plainJobs = jobs.map(job => job.toObject());
+    
+    console.log('Found jobs in database:', plainJobs);
+    console.log('Data structure details:', {
+      isArray: Array.isArray(plainJobs),
+      length: plainJobs.length,
+      type: typeof plainJobs
+    });
+
+    // Als er jobs zijn maar ze worden niet getoond, log ze
+    if (plainJobs.length > 0) {
+      console.log('Number of jobs found:', plainJobs.length);
+      console.log('Job statuses:', plainJobs.map(job => job.status));
+      console.log('Job IDs:', plainJobs.map(job => job._id));
+    } else {
+      console.log('No jobs found in database');
+    }
+
+    res.json(plainJobs);
   } catch (error) {
-    console.error('Error fetching jobs:', error);
+    console.error('Error in getJobs:', error);
     res.status(500).json({ message: "Error fetching jobs", error });
   }
 };
