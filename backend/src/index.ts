@@ -5,6 +5,7 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import connectDB from './config/database';
 import jobRoutes from './routes/jobs.routes';
+import dashboardRoutes from './routes/dashboard.routes'; // Nieuwe import
 import { limiter } from './middleware/auth';
 
 dotenv.config();
@@ -27,6 +28,7 @@ app.use(limiter);
 
 // Routes
 app.use('/api/jobs', jobRoutes);
+app.use('/api/dashboard', dashboardRoutes); // Nieuwe route
 
 // Health check route
 app.get('/api/health', (_req: Request, res: Response) => {
