@@ -2,7 +2,7 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
 export interface IJob extends Document {
-  clubId: mongoose.Types.ObjectId;
+  clubId: string; // Changed from mongoose.Types.ObjectId
   status: 'draft' | 'published' | 'closed';
   
   // Club Info (Public)
@@ -41,16 +41,16 @@ export interface IJob extends Document {
     continents: string[];
   };
 
-  // Financial Details (Can be hidden based on privacy settings)
+  // Financial Details (Updated types)
   financialDetails?: {
     salary?: {
-      range: [number, number];
+      range: string; // Changed from [number, number]
       currency: string;
       isNegotiable: boolean;
     };
     contractDuration?: string;
     bonuses?: {
-      signingBonus?: number;
+      signingBonus?: string; // Changed from number
       performanceBonuses?: string;
     };
     benefits?: string[];
@@ -67,8 +67,7 @@ export interface IJob extends Document {
 
 const JobSchema = new Schema({
   clubId: {
-    type: Schema.Types.ObjectId,
-    ref: 'Club',
+    type: String, // Changed from Schema.Types.ObjectId
     required: true
   },
   status: {
@@ -165,12 +164,12 @@ const JobSchema = new Schema({
     continents: [String]
   },
 
-  // Financial Details
+  // Financial Details (Updated schema)
   financialDetails: {
     salary: {
       range: {
-        type: [Number],
-        validate: [(val: number[]) => val.length === 2, 'Salary range must have min and max values']
+        type: String, // Changed from [Number]
+        required: true
       },
       currency: {
         type: String,
@@ -183,7 +182,7 @@ const JobSchema = new Schema({
     },
     contractDuration: String,
     bonuses: {
-      signingBonus: Number,
+      signingBonus: String, // Changed from Number
       performanceBonuses: String
     },
     benefits: [String],

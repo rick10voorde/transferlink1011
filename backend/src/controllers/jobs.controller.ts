@@ -1,3 +1,4 @@
+// backend/src/controllers/jobs.controller.ts
 import { Request, Response } from 'express';
 import { ParamsDictionary } from 'express-serve-static-core';
 import { ParsedQs } from 'qs';
@@ -18,20 +19,53 @@ export const createJob = async (req: AuthenticatedRequest, res: Response): Promi
       return;
     }
 
-    console.log('Creating job with data:', req.body);
-    console.log('Auth info:', req.auth);
-
-    const job = new Job({
-      ...req.body,
+    // Format the incoming data
+    const formattedJobData = {
+      // Basic job info
       clubId: req.auth.userId,
-      status: 'published'
-    });
+      status: 'published',
+      country: req.body.country,
+      league: req.body.league,
+      clubName: req.body.clubName,
+      clubLevel: req.body.clubLevel,
 
-    console.log('Job model created:', job);
+      // Contact info
+      contactInfo: req.body.contactInfo,
 
+      // Privacy settings
+      privacySettings: req.body.privacySettings,
+
+      // Player requirements
+      position: req.body.position,
+      experience: req.body.experience,
+      ageRange: req.body.ageRange,
+      height: req.body.height,
+      preferredFoot: req.body.preferredFoot,
+      origin: req.body.origin,
+
+      // Financial details structured properly
+      financialDetails: {
+        salary: {
+          range: req.body.salary,
+          currency: 'EUR',
+          isNegotiable: true
+        },
+        contractDuration: req.body.contractDuration,
+        bonuses: {
+          signingBonus: req.body.signingBonus,
+          performanceBonuses: req.body.bonuses
+        },
+        benefits: req.body.benefits || [],
+        additionalPerks: req.body.otherBenefits
+      }
+    };
+
+    console.log('Creating job with formatted data:', formattedJobData);
+
+    const job = new Job(formattedJobData);
     const savedJob = await job.save();
-    console.log('Job saved to database:', savedJob);
     
+    console.log('Job saved successfully:', savedJob);
     res.status(201).json(savedJob);
   } catch (error) {
     console.error('Detailed error in createJob:', error);
